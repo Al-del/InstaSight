@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SHORTMeal</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_main">Main</string>
+    <string name="title_activity_profil">Profil</string>
+    <string name="title_activity_profilus">Profilus</string>
+    <string name="title_activity_pagina_profil">PaginaProfil</string>
+    <string name="title_activity_forumus">Forumus</string>
+    <string name="title_activity_pagina_adauga_postare">PaginaAdaugaPostare</string>
+    <string name="title_activity_recepies">Recepies</string>
+    <string name="title_activity_show_recepies">Show_recepies</string>
+    <string name="title_activity_frendus">Frendus</string>
+    <string name="title_activity_friendus">Friendus</string>
+    <string name="title_activity_recepie_idk">Recepie_idk</string>
+</resources>

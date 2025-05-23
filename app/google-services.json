@@ -1,0 +1,87 @@
+{
+  "project_info": {
+    "project_number": "951685361464",
+    "firebase_url": "https://shorttmeal-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "shorttmeal",
+    "storage_bucket": "shorttmeal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951685361464:android:3893b8dc3453018c7fdbcd",
+        "android_client_info": {
+          "package_name": "com.SHortMeal.DB"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaNj1ndXLApkhabMxPenX_1HvrSXB6r9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951685361464:android:ad6db5c05f5d397b7fdbcd",
+        "android_client_info": {
+          "package_name": "com.eva.firebasequizapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaNj1ndXLApkhabMxPenX_1HvrSXB6r9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951685361464:android:f12e51037040bab27fdbcd",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaNj1ndXLApkhabMxPenX_1HvrSXB6r9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951685361464:android:cb21fe694ec462117fdbcd",
+        "android_client_info": {
+          "package_name": "com.example.shortmeal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaNj1ndXLApkhabMxPenX_1HvrSXB6r9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
