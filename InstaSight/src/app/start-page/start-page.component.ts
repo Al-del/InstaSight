@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { RouterOutlet } from '@angular/router';
+
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  selector: 'app-start-page',
+  imports: [],
+  templateUrl: './start-page.component.html',
+  styleUrl: './start-page.component.scss'
 })
-export class AppComponent {
+export class StartPageComponent {
   constructor(private router : Router) {}
   getStarted() {
     alert('Lets build something awesome! 🎉');
