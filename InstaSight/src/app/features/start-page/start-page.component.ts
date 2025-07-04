@@ -12,7 +12,6 @@ import { SharedModule } from '../../shared/shared.module';
 export class StartPageComponent {
  constructor(private router : Router) {}
   getStarted() {
-    alert('Lets build something awesome! 🎉');
     this.router.navigate(["/login"])
   }
 

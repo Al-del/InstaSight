@@ -1,12 +1,11 @@
 <div class="login-container">
     <div class="login-card">
       <h2>Login</h2>
-      <form>
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
-        <button class="login-btn">Login</button>
-      </form>
-  
+  <form (ngSubmit)="get_into_account()">
+  <input type="email" [(ngModel)]="email" name="email" placeholder="Email" />
+  <input type="password" [(ngModel)]="password" name="password" placeholder="Password" />
+  <button type="submit" class="login-btn">Log In</button>
+</form>
   <button class="google-btn">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/120px-Google_Favicon_2025.svg.png" alt="Google" width="20" height="20" />
     Continue with Google

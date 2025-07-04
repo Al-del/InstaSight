@@ -3,15 +3,12 @@ import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [
+    RouterOutlet
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  constructor(private router : Router) {}
-  getStarted() {
-    alert('Lets build something awesome! 🎉');
-    this.router.navigate(["/login"])
-  }
 
 }
