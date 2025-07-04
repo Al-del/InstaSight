@@ -1,0 +1,55 @@
+$app-primary-color: #3498db;
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $app-primary-color;
+  padding: 1rem 2rem;
+  color: white;
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .nav-links {
+    a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      position: relative;
+
+      &.active::after {
+        content: '';
+        display: block;
+        height: 2px;
+        background: white;
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    text-align: center;
+
+    .nav-links {
+      margin-top: 0.5rem;
+
+      a {
+        display: block;
+        margin: 0.5rem 0;
+      }
+    }
+  }
+}

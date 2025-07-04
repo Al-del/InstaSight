@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-login',
   imports: [],
@@ -7,7 +8,7 @@ import { Route, Router } from '@angular/router';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  constructor(private router : Router) {}
+ constructor(private router : Router) {}
   go_to_register(){
     this.router.navigate(["/register"]);
   }

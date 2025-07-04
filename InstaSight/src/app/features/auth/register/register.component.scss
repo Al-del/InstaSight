@@ -2,8 +2,7 @@ $black: #000000;
 $mint: #cfffe2;
 $soft-green: #a2d5c6;
 $light-grey: #f6f6f6;
-
-.login-container {
+.register-container {
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -12,7 +11,7 @@ $light-grey: #f6f6f6;
   padding: 1rem;
 }
 
-.login-card {
+.register-card {
   background-color: white;
   padding: 3rem 2rem;
   border-radius: 16px;
@@ -45,7 +44,7 @@ $light-grey: #f6f6f6;
       }
     }
 
-    .login-btn {
+    .register-btn {
       margin-top: 0.5rem;
       padding: 0.75rem;
       background-color: $soft-green;
@@ -62,31 +61,7 @@ $light-grey: #f6f6f6;
     }
   }
 
-  .google-btn {
-    margin-top: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    border: 1px solid $soft-green;
-    border-radius: 8px;
-    background-color: white;
-    color: $black;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.3s ease;
-
-    img {
-      height: 20px;
-    }
-
-    &:hover {
-      background-color: $mint;
-    }
-  }
-
-  .signup-text {
+  .login-text {
     margin-top: 1.5rem;
     font-size: 0.9rem;
 
