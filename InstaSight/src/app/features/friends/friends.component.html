@@ -1,0 +1,18 @@
+<div class="video-container">
+  <video #localVideo autoplay playsinline muted></video>
+  
+  <div *ngIf="!cameraAccessGranted" class="permission-prompt">
+    <p>We need your permission to access your camera for video streaming.</p>
+    <button 
+      #permissionButton
+      (click)="requestCameraPermission()"
+      [disabled]="isLoading"
+      class="permission-button"
+    >
+      <span *ngIf="!isLoading">Allow Camera Access</span>
+      <span *ngIf="isLoading">Checking permissions...</span>
+    </button>
+    
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </div>
+</div>
