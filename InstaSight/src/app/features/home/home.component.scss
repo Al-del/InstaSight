@@ -51,4 +51,13 @@
   button:hover {
     background-color: #ff7a26;
   }
-  
+  .video-preview-container {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 30px auto 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 3px solid #ff914d;
+    position: relative;
+  }

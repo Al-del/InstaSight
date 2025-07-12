@@ -8,14 +8,25 @@ export class WebrtcService {
   private socket!: Socket;
   private pc!: RTCPeerConnection;
   private stream!: MediaStream;
+  private warningCallback: ((warning: any) => void) | null = null;
 
-  async init(localVideo: HTMLVideoElement): Promise<void> {
-    // Connect to Socket.IO server
+  async init(
+    localVideo: HTMLVideoElement, 
+    warningCallback: (warning: any) => void
+  ): Promise<void> {
+    this.warningCallback = warningCallback;
+    
     this.socket = io('http://192.168.0.110:5000');
-
-    // Set up event handlers for signaling messages
+    
     this.socket.on('connect', () => {
       console.log('Socket.IO connected');
+    });
+
+    this.socket.on('object_warning', (data: any) => {
+      console.log('Object warning received:', data);
+      if (this.warningCallback) {
+        this.warningCallback(data);
+      }
     });
 
     this.socket.on('message', async (data: any) => {
@@ -39,17 +50,14 @@ export class WebrtcService {
       }
     });
 
-    // Create RTCPeerConnection with STUN server config
     this.pc = new RTCPeerConnection({
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
-        // Add TURN servers if needed for NAT traversal
       ],
       bundlePolicy: 'max-bundle',
       rtcpMuxPolicy: 'require'
     });
 
-    // When new ICE candidates are found, send them to the server
     this.pc.onicecandidate = (event) => {
       if (event.candidate) {
         this.socket.emit('message', {
@@ -59,25 +67,21 @@ export class WebrtcService {
       }
     };
 
-    // Get local media stream and display it in the video element
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       localVideo.srcObject = this.stream;
 
-      // Add local tracks to the peer connection
       this.stream.getTracks().forEach(track => {
         this.pc.addTrack(track, this.stream);
       });
 
-      // Create an offer with proper options
       const offer = await this.pc.createOffer({
-        offerToReceiveVideo: false, // We're only sending
+        offerToReceiveVideo: false,
         offerToReceiveAudio: false
       });
       
       await this.pc.setLocalDescription(offer);
 
-      // Send the offer to the signaling server
       this.socket.emit('message', {
         type: 'offer',
         offer: offer
@@ -89,6 +93,7 @@ export class WebrtcService {
   }
 
   destroy(): void {
+    this.warningCallback = null;
     if (this.stream) {
       this.stream.getTracks().forEach(track => track.stop());
     }

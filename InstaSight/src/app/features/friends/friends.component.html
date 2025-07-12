@@ -1,6 +1,17 @@
 <div class="video-container">
-  <video #localVideo autoplay playsinline muted></video>
+  <!-- Warning alert that appears when objects are too close -->
+  <div *ngIf="warningActive" class="warning-alert">
+    <div class="warning-content">
+      <span class="warning-icon">⚠️</span>
+      <div>{{ warningMessage }}</div>
+      <button class="dismiss-button" (click)="warningActive = false">×</button>
+    </div>
+  </div>
+
+  <!-- Full-screen video element -->
+  <video #localVideo autoplay playsinline muted class="fullscreen-video"></video>
   
+  <!-- Permission prompt overlay -->
   <div *ngIf="!cameraAccessGranted" class="permission-prompt">
     <p>We need your permission to access your camera for video streaming.</p>
     <button 
@@ -14,5 +25,13 @@
     </button>
     
     <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Control bar at bottom -->
+  <div class="control-bar">
+    <button (click)="playOnlineSound()" class="control-button">
+      <span class="button-icon">🔇</span>
+      <span class="button-text">Mute Alerts</span>
+    </button>
   </div>
 </div>

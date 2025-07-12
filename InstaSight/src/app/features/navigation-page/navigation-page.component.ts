@@ -9,13 +9,14 @@ import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { GetUserLocationService } from '../../core/services/get-user-location.service';
 import { HttpClient } from '@angular/common/http';
-
+import { FriendsComponent } from '../friends/friends.component';
 @Component({
   selector: 'app-navigation-page',
   standalone: true,
   templateUrl: './navigation-page.component.html',
   styleUrls: ['./navigation-page.component.scss'],
-  providers: [GetUserLocationService]
+  providers: [GetUserLocationService],
+  imports : [FriendsComponent]
 })
 export class NavigationPageComponent implements AfterViewInit, OnDestroy {
   private map: any;

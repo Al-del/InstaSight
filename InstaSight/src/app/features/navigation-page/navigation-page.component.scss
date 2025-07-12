@@ -1,5 +1,71 @@
+/* Full-screen map styling */
 #map {
-  height: 100vh; /* or 500px, or whatever fits your layout */
-  width: 100%;
-  z-index: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1; /* Below the video preview */
+}
+
+/* Floating video preview (updated to stay on top) */
+.video-preview-container {
+  width: 400px;
+  height: 250px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ff914d;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000; /* Higher than map */
+  transition: transform 0.3s ease;
+  background: white; /* Ensure visibility over map */
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  animation: subtlePulse 4s infinite ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .video-preview-container {
+    width: 350px;
+    height: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .video-preview-container {
+    width: 300px;
+    height: 190px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-preview-container {
+    width: calc(100% - 30px);
+    height: 150px;
+    bottom: 15px;
+    right: 15px;
+    left: 15px;
+    margin: 0 auto;
+  }
+  
+  /* Optional: Make map adjust for mobile browser UI */
+  #map {
+    height: calc(100vh - 60px); /* Adjust for mobile address bars */
+  }
+}
+
+@keyframes subtlePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
 }
