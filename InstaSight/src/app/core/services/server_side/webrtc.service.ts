@@ -11,7 +11,7 @@ export class WebrtcService {
 
   async init(localVideo: HTMLVideoElement): Promise<void> {
     // Connect to Socket.IO server
-    this.socket = io('http://localhost:5000');
+    this.socket = io('http://192.168.0.110:5000');
 
     // Set up event handlers for signaling messages
     this.socket.on('connect', () => {
