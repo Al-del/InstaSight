@@ -1,18 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GeocodingService } from '../../core/services/geocoding.service';
 import { Router } from '@angular/router';
+import { SharedModule } from '../../shared/shared.module';
+import { VerticalFooterComponent } from '../../shared/components/vertical-footer/vertical-footer.component';
+import { UserdataService } from '../../shared/service/userdata.service';
 @Component({
   selector: 'app-home',
   standalone :true,
-  imports: [ FormsModule],
+  imports: [ FormsModule, SharedModule, VerticalFooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
+  email: string = '';
+  username: string = '';
   location: string = '';
-  constructor(private geocodingService : GeocodingService, private router : Router) {}
 
+  constructor(
+    private geocodingService: GeocodingService, 
+    private router: Router
+  ) {
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras?.state as {
+      email: string,
+      user: string  // Changed to match what you're passing
+    } | undefined;
+    
+    if (state) {
+      this.email = state.email;
+      this.username = state.user;  // Changed from state.user
+    }
+    console.log(this.email);
+  }
   onStart() {
     if (this.location.trim()) {
       this.geocodingService.getCoordinates(this.location).subscribe({

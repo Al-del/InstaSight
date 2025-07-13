@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
-
+import { VerticalFooterComponent } from './components/vertical-footer/vertical-footer.component';
 @NgModule({
   declarations: [
     
@@ -10,12 +10,14 @@ import { FooterComponent } from './components/footer/footer.component';
   imports: [
     CommonModule,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    VerticalFooterComponent
     
   ],
   exports : [
   HeaderComponent,
-  FooterComponent
+  FooterComponent,
+  VerticalFooterComponent
   ]
 })
 export class SharedModule { }

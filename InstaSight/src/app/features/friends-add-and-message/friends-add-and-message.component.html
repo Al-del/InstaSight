@@ -1,0 +1,33 @@
+<div class="container" *ngIf="currentUserId; else loginMessage">
+    <div class="sidebar">
+      <h3>{{ email }}</h3>
+      <input [(ngModel)]="friendSearchEmail" placeholder="Search friend by email" />
+      <button (click)="addFriend()">Add Friend</button>
+  
+      <h4>Your Friends</h4>
+      <ul>
+        <li *ngFor="let friend of friends" (click)="selectFriend(friend)">
+          {{ friend.email }}
+        </li>
+      </ul>
+      <button (click)="logout()">Logout</button>
+    </div>
+  
+    <div class="chat-window" *ngIf="selectedFriend">
+      <h3>Chat with {{ selectedFriend.email }}</h3>
+      <div class="messages">
+        <div *ngFor="let msg of messages" [class.self]="msg.sender === currentUserId">
+          {{ msg.text }}
+        </div>
+      </div>
+      <input [(ngModel)]="newMessage" placeholder="Type a message" />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+  
+  <ng-template #loginMessage>
+    <p>Please log in to use the chat app.</p>
+  </ng-template>
+  
+  <app-vertical-footer></app-vertical-footer>
+  

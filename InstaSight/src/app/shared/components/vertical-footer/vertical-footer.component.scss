@@ -1,0 +1,49 @@
+/* vertical-header.component.css */
+.vertical-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;        /* Full height */
+    width: 220px;         /* Sidebar width */
+    background-color: #42273B; /* Deep Plum */
+    color: #9EE493;       /* Light Mint */
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+  }
+  
+  .nav-links li {
+    margin-bottom: 1.5rem;
+  }
+  
+  .nav-links a {
+    color: #9EE493;
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: block;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-links a:hover,
+  .nav-links a.active {
+    background-color: #9EE493;
+    color: #42273B;
+  }
+  

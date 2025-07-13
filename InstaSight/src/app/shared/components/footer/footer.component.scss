@@ -1,5 +1,6 @@
-$app-footer-bg: #2c3e50;
-$app-footer-text: #ecf0f1;
+// Updated footer colors
+$app-footer-bg: #355834;     // Olive Green for background
+$app-footer-text: #F1F5F2;   // Soft White for footer text
 
 .app-footer {
   background-color: $app-footer-bg;
@@ -22,6 +23,7 @@ $app-footer-text: #ecf0f1;
         margin: 0 0.75rem;
 
         &:hover {
+          color: #C2A878; // Warm sand accent on hover
           text-decoration: underline;
         }
       }

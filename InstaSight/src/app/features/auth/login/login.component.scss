@@ -1,7 +1,7 @@
-$black: #000000;
-$mint: #cfffe2;
-$soft-green: #a2d5c6;
-$light-grey: #f6f6f6;
+$black: #14281D;
+$mint: #C2A878;
+$soft-green: #355834;
+$light-grey: #F1F5F2;
 
 .login-container {
   height: 100vh;
@@ -62,29 +62,29 @@ $light-grey: #f6f6f6;
     }
   }
 
-.google-btn {
-  margin: 1.5rem auto 0 auto; // top margin + auto horizontal centering
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border: 1px solid $soft-green;
-  border-radius: 8px;
-  background-color: white;
-  color: $black;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  .google-btn {
+    margin: 1.5rem auto 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid $soft-green;
+    border-radius: 8px;
+    background-color: white;
+    color: $black;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
 
-  img {
-    height: 20px;
-  }
+    img {
+      height: 20px;
+    }
 
-  &:hover {
-    background-color: $mint;
+    &:hover {
+      background-color: $mint;
+    }
   }
-}
 
   .signup-text {
     margin-top: 1.5rem;

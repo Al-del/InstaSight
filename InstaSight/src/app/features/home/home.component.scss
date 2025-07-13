@@ -1,63 +1,81 @@
+@use 'sass:color';
+$black: #14281D;
+$mint: #C2A878;
+$soft-green: #355834;
+$light-grey: #F1F5F2;
+$off-white: #FBFAF8;
+
 .container {
-    max-width: 500px;
-    margin: 100px auto;
-    padding: 30px;
-    border-radius: 16px;
-    background-color: #fff9f0;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    text-align: center;
-    font-family: 'Segoe UI', sans-serif;
+  max-width: 500px;
+  margin: 100px auto;
+  padding: 30px;
+  border-radius: 16px;
+  background-color: $off-white;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: $black;
+}
+
+.subtitle {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: color.adjust($black, $lightness: -20%);
+
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: $soft-green;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid color.adjust($soft-green, $lightness: 20%);
+  font-size: 16px;
+  margin-bottom: 20px;
+  background-color: $light-grey;
+  color: $black;
+
+  &:focus {
+    outline: none;
+    border-color: $mint;
+    background-color: #fff;
   }
-  
-  h1 {
-    font-size: 32px;
-    margin-bottom: 10px;
-    color: #333;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background-color: $soft-green;
+  color: white;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background-color: $mint;
   }
-  
-  .subtitle {
-    font-size: 18px;
-    margin-bottom: 30px;
-    color: #666;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: 500;
-  }
-  
-  input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  button {
-    width: 100%;
-    padding: 14px;
-    background-color: #ff914d;
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #ff7a26;
-  }
-  .video-preview-container {
-    width: 200px;
-    height: 200px;
-    border-radius: 12px;
-    overflow: hidden;
-    margin: 30px auto 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 3px solid #ff914d;
-    position: relative;
-  }
+}
+
+.video-preview-container {
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 30px auto 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 3px solid $mint;
+  position: relative;
+}

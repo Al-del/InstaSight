@@ -1,4 +1,9 @@
-$app-primary-color: #3498db;
+// Updated color palette
+$app-primary-color: #14281D;     // Deep Forest Green for header background
+$app-accent-color: #C2A878;      // Warm Sand for highlights
+$app-background-color: #F1F5F2;  // Soft background
+$app-secondary-color: #355834;   // Olive Green for hover
+$app-text-color: #F1F5F2;        // Main text color
 
 .app-header {
   display: flex;
@@ -6,16 +11,17 @@ $app-primary-color: #3498db;
   align-items: center;
   background-color: $app-primary-color;
   padding: 1rem 2rem;
-  color: white;
+  color: $app-accent-color;
 
   .logo {
     font-size: 1.5rem;
     font-weight: bold;
+    color: $app-accent-color;
   }
 
   .nav-links {
     a {
-      color: white;
+      color: $app-accent-color;
       text-decoration: none;
       margin-left: 1.5rem;
       position: relative;
@@ -24,7 +30,7 @@ $app-primary-color: #3498db;
         content: '';
         display: block;
         height: 2px;
-        background: white;
+        background: $app-accent-color;
         position: absolute;
         bottom: -4px;
         left: 0;
@@ -33,6 +39,7 @@ $app-primary-color: #3498db;
 
       &:hover {
         text-decoration: underline;
+        color: $app-secondary-color;
       }
     }
   }

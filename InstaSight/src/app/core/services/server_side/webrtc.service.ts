@@ -16,7 +16,7 @@ export class WebrtcService {
   ): Promise<void> {
     this.warningCallback = warningCallback;
     
-    this.socket = io('http://192.168.0.110:5000');
+    this.socket = io('https://recommendation-regardless-contains-familiar.trycloudflare.com');
     
     this.socket.on('connect', () => {
       console.log('Socket.IO connected');
