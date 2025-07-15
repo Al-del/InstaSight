@@ -3,9 +3,10 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 1; /* Below the video preview */
+  /// ai scale-ul la harta in HTML
 }
 
 /* Floating video preview (updated to stay on top) */
@@ -15,7 +16,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 3px solid #ff914d;
+  border: 3px solid #638a62;
   position: fixed;
   bottom: 30px;
   right: 30px;
@@ -51,6 +52,7 @@
 @media (max-width: 480px) {
   .video-preview-container {
     width: calc(100% - 30px);
+    //width: calc(100%);
     height: 150px;
     bottom: 15px;
     right: 15px;

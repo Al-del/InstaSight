@@ -5,12 +5,13 @@
     left: 0;
     height: 100vh;        /* Full height */
     width: 220px;         /* Sidebar width */
-    background-color: #42273B; /* Deep Plum */
-    color: #9EE493;       /* Light Mint */
+    background-color: #355834; /* Deep Plum */
+    color: #F1F5F2;       /* Light Mint */
     display: flex;
     flex-direction: column;
     padding: 2rem 1rem;
     box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
   }
   
   .logo {
@@ -32,7 +33,7 @@
   }
   
   .nav-links a {
-    color: #9EE493;
+    color: #F1F5F2;
     text-decoration: none;
     font-size: 1.1rem;
     display: block;
@@ -43,7 +44,7 @@
   
   .nav-links a:hover,
   .nav-links a.active {
-    background-color: #9EE493;
-    color: #42273B;
+    background-color: #F1F5F2;
+    color: #355834;
   }
   
