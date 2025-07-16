@@ -17,7 +17,7 @@ import { SharedModule } from '../../shared/shared.module';
   templateUrl: './navigation-page.component.html',
   styleUrls: ['./navigation-page.component.scss'],
   providers: [GetUserLocationService],
-  imports : [FriendsComponent, SharedModule]
+  imports : [SharedModule,FriendsComponent]
 })
 export class NavigationPageComponent implements AfterViewInit, OnDestroy {
   private map: any;
