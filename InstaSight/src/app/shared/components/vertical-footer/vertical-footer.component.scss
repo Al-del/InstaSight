@@ -1,50 +1,79 @@
-/* vertical-header.component.css */
 .vertical-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;        /* Full height */
-    width: 220px;         /* Sidebar width */
-    background-color: #355834; /* Deep Plum */
-    color: #F1F5F2;       /* Light Mint */
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 1rem;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 220px;
+  background-color: #355834;
+  color: #F1F5F2;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  transition: width 0.3s ease;
+  overflow: hidden;
+
+  &.collapsed {
+    width: 60px;
+
+    .logo {
+      font-size: 1.2rem;
+    }
+
+    .nav-links {
+      display: none;
+    }
   }
-  
+
   .logo {
     font-size: 1.8rem;
     font-weight: bold;
     margin-bottom: 2rem;
     text-align: center;
+    transition: font-size 0.3s ease;
   }
-  
+
   .nav-links {
     list-style: none;
     padding: 0;
     margin: 0;
     flex-grow: 1;
+
+    li {
+      margin-bottom: 1.5rem;
+    }
+
+    a {
+      color: #F1F5F2;
+      text-decoration: none;
+      font-size: 1.1rem;
+      display: block;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+
+      &:hover,
+      &.active {
+        background-color: #F1F5F2;
+        color: #355834;
+      }
+    }
   }
-  
-  .nav-links li {
-    margin-bottom: 1.5rem;
-  }
-  
-  .nav-links a {
+
+  .toggle-btn {
+    background: none;
+    border: none;
     color: #F1F5F2;
-    text-decoration: none;
-    font-size: 1.1rem;
-    display: block;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
+    font-size: 1.2rem;
+    cursor: pointer;
+    align-self: flex-end;
+    margin-top: auto;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.2);
+    }
   }
-  
-  .nav-links a:hover,
-  .nav-links a.active {
-    background-color: #F1F5F2;
-    color: #355834;
-  }
-  
+}

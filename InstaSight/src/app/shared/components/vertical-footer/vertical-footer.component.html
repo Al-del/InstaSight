@@ -1,6 +1,6 @@
-<nav class="vertical-header">
+<nav class="vertical-header" [class.collapsed]="isCollapsed">
   <div class="logo">InstaSight</div>
-  <ul class="nav-links">
+  <ul class="nav-links" *ngIf="!isCollapsed">
     <li (click)="goToNavigate()">
       <a [ngClass]="{'active': activeRoute.includes('/home')}">InstaNavigate</a>
     </li>
@@ -14,4 +14,7 @@
       <a [ngClass]="{'active': activeRoute.includes('/contact')}">Contact</a>
     </li>
   </ul>
+  <button class="toggle-btn" (click)="toggleCollapse()">
+    {{ isCollapsed ? '▶' : '◀' }}
+  </button>
 </nav>

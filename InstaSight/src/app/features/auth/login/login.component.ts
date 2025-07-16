@@ -25,6 +25,7 @@ export class LoginComponent {
         };
         this.router.navigate(['/home'], navigationExtras); 
       })
+      
       .catch(error => {
         alert(`Login failed: ${error.message}`);
       });

@@ -1,21 +1,36 @@
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input,
+  OnInit,
+  ElementRef,
+  AfterViewInit,
+  Renderer2,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { UserdataService } from '../../service/userdata.service';
-import { OnInit } from '@angular/core';
+
 @Component({
   selector: 'app-vertical-footer',
   imports: [CommonModule, FormsModule],
   templateUrl: './vertical-footer.component.html',
   styleUrl: './vertical-footer.component.scss'
 })
-export class VerticalFooterComponent implements OnInit {
+export class VerticalFooterComponent implements OnInit, AfterViewInit {
   @Input() email: string = '';
   @Input() username: string = '';
-  activeRoute: string = '';  // <-- track the current route
-
-  constructor(private userDataService: UserdataService, private router: Router) {}
+  activeRoute: string = '';
+  isCollapsed: boolean = false;
+  @Output() collapseStateChanged = new EventEmitter<boolean>();
+  constructor(
+    private userDataService: UserdataService,
+    private router: Router,
+    private elRef: ElementRef,
+    private renderer: Renderer2
+  ) {}
 
   ngOnInit() {
     this.userDataService.currentUserData.subscribe(data => {
@@ -23,15 +38,44 @@ export class VerticalFooterComponent implements OnInit {
       this.username = data.username || this.username;
     });
 
-    // Get initial route
     this.activeRoute = this.router.url;
 
-    // Update active route on navigation
     this.router.events.subscribe((event: any) => {
       if (event?.url) {
         this.activeRoute = event.url;
       }
     });
+  }
+
+  ngAfterViewInit() {
+    if (typeof window !== 'undefined' && typeof (window as any).Hammer !== 'undefined') {
+      const hammertime = new (window as any).Hammer(this.elRef.nativeElement);
+  
+      // Enable double tap
+      hammertime.get('tap').set({ taps: 2 });
+  
+      // Handle double tap
+      hammertime.on('doubletap', () => {
+        this.goToNavigate(); // navigate to /home
+      });
+  
+      // Optional: Handle swipe gestures
+      hammertime.on('swipeleft', () => {
+        this.isCollapsed = true;
+      });
+  
+      hammertime.on('swiperight', () => {
+        this.isCollapsed = false;
+      });
+    } else {
+      console.warn('HammerJS not available.');
+    }
+  }
+  
+
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+    this.collapseStateChanged.emit(this.isCollapsed);
   }
 
   goToNavigate() {
@@ -48,7 +92,7 @@ export class VerticalFooterComponent implements OnInit {
     setTimeout(() => this.router.navigate(['/message']), 50);
   }
 
-  goToView(){
+  goToView() {
     this.userDataService.updateUserData({
       email: this.email,
       username: this.username

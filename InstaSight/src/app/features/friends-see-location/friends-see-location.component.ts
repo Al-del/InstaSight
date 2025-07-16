@@ -1,129 +1,150 @@
 import {
   Component,
-  OnInit,
-  OnDestroy,
   Inject,
-  PLATFORM_ID
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { SharedModule } from '../../shared/shared.module';
+import {
+  Firestore,
+  collection,
+  doc,
+  setDoc,
+  onSnapshot,
+} from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
-import { UserdataService } from '../../shared/service/userdata.service';
-import { VerticalFooterComponent } from '../../shared/components/vertical-footer/vertical-footer.component';
+import { GeocodingService } from '../../core/services/geocoding.service';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'app-friends-see-location',
-  imports: [SharedModule, VerticalFooterComponent],
   templateUrl: './friends-see-location.component.html',
-  styleUrl: './friends-see-location.component.scss'
+  styleUrls: ['./friends-see-location.component.scss'],
+  standalone: true,
+  imports: [SharedModule],
 })
 export class FriendsSeeLocationComponent implements OnInit, OnDestroy {
-  map!: L.Map;
-  currentUserId!: string;
-  markers: { [uid: string]: L.Marker } = {};
-  email: string = '';
-  username: string = '';
-  private subscription!: Subscription; // Definite assignment assertion
+  map: any;
+  marker: any;
+  friendsMarkers: { [uid: string]: any } = {};
+  locationSubscription: Subscription | undefined;
+  myUid: string | null = null;
+  myAddressString = 'Constanta, Romania';
+  
+  // Web URLs for marker icons
+  private readonly MY_MARKER_URL = 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png';
+  private readonly FRIEND_MARKER_URL = 'https://cdn-icons-png.flaticon.com/512/684/684908.png';
 
   constructor(
-    private userDataService: UserdataService, 
-    private afAuth: AngularFireAuth, 
-    private afs: AngularFirestore,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private firestore: Firestore,
+    private auth: Auth,
+    private geocodingService: GeocodingService
   ) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      import('leaflet').then(L => {
-        this.afAuth.authState.subscribe(user => {
-          if (user) {
-            this.currentUserId = user.uid;
-  
-            // Save reference to L so it's available elsewhere
-            (this as any).L = L;
-  
-            this.initMap();
-            this.trackAndSaveLocation();
-            this.loadFriendsLocations();
-          }
-        });
+      import('leaflet').then((L) => {
+        this.initMap(L);
+        this.watchFriends(L);
+        this.getLocationFromAddress(this.myAddressString, L);
       });
     }
   }
-  
-  
-  initMap(): void {
-    const L = (this as any).L;
-    this.map = L.map('leaflet-map').setView([0, 0], 2);
+
+  ngOnDestroy(): void {
+    if (this.locationSubscription) {
+      this.locationSubscription.unsubscribe();
+    }
+  }
+
+  private initMap(L: typeof import('leaflet')): void {
+    this.map = L.map('map').setView([44.1746, 28.628], 12);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
+      attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
   }
-  trackAndSaveLocation(): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(
-        pos => {
-          const coords = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-          };
 
-          this.afs.doc(`users/${this.currentUserId}`).set({ location: coords }, { merge: true });
-
-          this.addOrUpdateMarker(this.currentUserId, coords.lat, coords.lng, 'You');
-          this.map.setView([coords.lat, coords.lng], 13);
-        },
-        err => console.error('Location error:', err),
-        { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
-      );
-    }
+  private getLocationFromAddress(address: string, L: typeof import('leaflet')): void {
+    this.geocodingService.getCoordinates(address).subscribe(
+      ({ lat, lng }) => {
+        this.saveMyLocation(lat, lng);
+        this.updateMyMarker(lat, lng, L);
+      },
+      (error) => {
+        console.error('Geocoding failed:', error);
+      }
+    );
   }
-  async loadFriendsLocations(): Promise<void> {
-    const friendsRef = this.afs.collection(`users/${this.currentUserId}/friends`);
-    const friendsSnap = await friendsRef.get().toPromise();
 
-    for (const doc of friendsSnap?.docs || []) {
-      const friendId = doc.id;
-      this.afs.doc(`users/${friendId}`).valueChanges().subscribe((data: any) => {
-        if (data?.location) {
-          this.addOrUpdateMarker(friendId, data.location.lat, data.location.lng, data.email);
+  private saveMyLocation(lat: number, lng: number): void {
+    const user = this.auth.currentUser;
+    if (!user) return;
+
+    this.myUid = user.uid;
+
+    const locationRef = doc(
+      collection(this.firestore, 'locations'),
+      this.myUid
+    );
+    setDoc(locationRef, { lat, lng });
+  }
+
+  private updateMyMarker(lat: number, lng: number, L: typeof import('leaflet')): void {
+    if (!this.map) return;
+
+    if (this.marker) {
+      this.marker.setLatLng([lat, lng]);
+    } else {
+      this.marker = L.marker([lat, lng], {
+        icon: L.icon({
+          iconUrl: this.MY_MARKER_URL,
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],  // Point of the icon which will correspond to marker's location
+          popupAnchor: [0, -32]  // Point from which the popup should open relative to the iconAnchor
+        }),
+      }).addTo(this.map);
+    }
+
+    this.map.setView([lat, lng], 13);
+  }
+
+  private watchFriends(L: typeof import('leaflet')): void {
+    const user = this.auth.currentUser;
+    if (!user) return;
+
+    const friends = ['friend_uid_1', 'friend_uid_2']; // replace with actual logic
+
+    friends.forEach((friendUid) => {
+      const friendDocRef = doc(this.firestore, 'locations', friendUid);
+      onSnapshot(friendDocRef, (docSnap) => {
+        const data = docSnap.data();
+        if (data && data['lat'] && data['lng']) {
+          this.updateFriendMarker(friendUid, data['lat'], data['lng'], L);
         }
       });
-    }
-  }
-  addOrUpdateMarker(uid: string, lat: number, lng: number, label: string): void {
-    const isMe = uid === this.currentUserId;
-    const iconColor = isMe ? 'blue' : 'red';
-    const iconUrl = `https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@1.0.0/img/marker-icon-${iconColor}.png`;
-    const iconUrl2x = `https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@1.0.0/img/marker-icon-2x-${iconColor}.png`;
-    const shadowUrl = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png'; // standard shadow :contentReference[oaicite:1]{index=1}
-    const L = (this as any).L;
-
-    const icon = L.icon({
-      iconUrl,
-      iconRetinaUrl: iconUrl2x,
-      shadowUrl,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
     });
-  
-    if (this.markers[uid]) {
-      this.markers[uid].setLatLng([lat, lng]);
-    } else {
-      this.markers[uid] = L.marker([lat, lng], { icon })
-        .bindPopup(label)
-        .addTo(this.map);
-    }
   }
-  
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+
+  private updateFriendMarker(uid: string, lat: number, lng: number, L: typeof import('leaflet')): void {
+    if (!this.map) return;
+
+    if (this.friendsMarkers[uid]) {
+      this.friendsMarkers[uid].setLatLng([lat, lng]);
+    } else {
+      const marker = L.marker([lat, lng], {
+        icon: L.icon({
+          iconUrl: this.FRIEND_MARKER_URL,
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -32]
+        }),
+      }).addTo(this.map);
+
+      this.friendsMarkers[uid] = marker;
     }
   }
 }

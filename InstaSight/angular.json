@@ -71,7 +71,7 @@
             "host": "0.0.0.0",
             "port": 4200,
           "allowedHosts": [
-            "backed-amended-belief-friends.trycloudflare.com"
+            "herring-social-happily.ngrok-free.app"
           ]
           },
           "configurations": {
@@ -106,7 +106,9 @@
               "node_modules/leaflet/dist/leaflet.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+                "node_modules/hammerjs/hammer.min.js"
+            ]
           }
         }
       }
