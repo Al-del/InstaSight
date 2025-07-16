@@ -1,0 +1,21 @@
+<nav class="floating-footer" [class.collapsed]="isCollapsed">
+    <div class="logo" *ngIf="!isCollapsed">InstaSight</div>
+    <ul class="nav-links" *ngIf="!isCollapsed">
+      <li (click)="goToNavigate()">
+        <a [ngClass]="{'active': activeRoute.includes('/home')}">InstaNavigate</a>
+      </li>
+      <li (click)="goToFriends()">
+        <a [ngClass]="{'active': activeRoute.includes('/message')}">InstaFriends</a>
+      </li>
+      <li (click)="goToView()">
+        <a [ngClass]="{'active': activeRoute.includes('/view_loc')}">InstaView</a>
+      </li>
+      <li>
+        <a [ngClass]="{'active': activeRoute.includes('/contact')}">Contact</a>
+      </li>
+    </ul>
+    <button class="toggle-btn" (click)="toggleCollapse()">
+      {{ isCollapsed ? '▲' : '▼' }}
+    </button>
+  </nav>
+  

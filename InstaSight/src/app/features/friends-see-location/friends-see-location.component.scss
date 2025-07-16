@@ -2,10 +2,11 @@
   display: block;
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
 }
 
 .main-content {
-  height: 100%;
+  height: 100vh;
   width: 100%;
   position: relative;
 }
@@ -18,4 +19,6 @@
 #map {
   height: 100%;
   width: 100%;
+  position: relative;
+  z-index: 0;
 }

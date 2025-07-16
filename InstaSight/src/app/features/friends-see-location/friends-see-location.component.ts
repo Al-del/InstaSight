@@ -15,6 +15,7 @@ import {
 } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
+import { FloatingFooterComponent } from '../../shared/components/floating-footer/floating-footer.component';
 import { GeocodingService } from '../../core/services/geocoding.service';
 import { SharedModule } from '../../shared/shared.module';
 
@@ -23,7 +24,7 @@ import { SharedModule } from '../../shared/shared.module';
   templateUrl: './friends-see-location.component.html',
   styleUrls: ['./friends-see-location.component.scss'],
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, FloatingFooterComponent],
 })
 export class FriendsSeeLocationComponent implements OnInit, OnDestroy {
   map: any;

@@ -10,13 +10,14 @@ import { ActivatedRoute } from '@angular/router';
 import { GetUserLocationService } from '../../core/services/get-user-location.service';
 import { HttpClient } from '@angular/common/http';
 import { FriendsComponent } from '../friends/friends.component';
+import { SharedModule } from '../../shared/shared.module';
 @Component({
   selector: 'app-navigation-page',
   standalone: true,
   templateUrl: './navigation-page.component.html',
   styleUrls: ['./navigation-page.component.scss'],
   providers: [GetUserLocationService],
-  imports : [FriendsComponent]
+  imports : [FriendsComponent, SharedModule]
 })
 export class NavigationPageComponent implements AfterViewInit, OnDestroy {
   private map: any;

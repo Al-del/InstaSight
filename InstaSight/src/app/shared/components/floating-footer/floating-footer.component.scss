@@ -1,0 +1,67 @@
+.floating-footer {
+  position: fixed;
+  bottom: 20px; // floating! not stuck to edge
+  left: 50%;
+  transform: translateX(-50%);
+  width: fit-content;
+  padding: 0.75rem 2rem;
+  background-color: #355834;
+  color: #F1F5F2;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: 'Inter', sans-serif;
+  z-index: 9999; // force above map
+  transition: all 0.3s ease;
+  pointer-events: auto;
+
+  .logo {
+    font-weight: bold;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    a {
+      color: #F1F5F2;
+      text-decoration: none;
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+
+      &.active,
+      &:hover {
+        background-color: #F1F5F2;
+        color: #355834;
+      }
+    }
+  }
+
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: #F1F5F2;
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  &.collapsed {
+    .logo,
+    .nav-links {
+      display: none;
+    }
+
+    height: auto;
+    padding: 0.5rem 1rem;
+  }
+}
