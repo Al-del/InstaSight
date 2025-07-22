@@ -11,13 +11,14 @@ import { GetUserLocationService } from '../../core/services/get-user-location.se
 import { HttpClient } from '@angular/common/http';
 import { FriendsComponent } from '../friends/friends.component';
 import { SharedModule } from '../../shared/shared.module';
+
 @Component({
   selector: 'app-navigation-page',
   standalone: true,
   templateUrl: './navigation-page.component.html',
   styleUrls: ['./navigation-page.component.scss'],
   providers: [GetUserLocationService],
-  imports : [SharedModule,FriendsComponent]
+  imports: [SharedModule, FriendsComponent]
 })
 export class NavigationPageComponent implements AfterViewInit, OnDestroy {
   private map: any;
@@ -25,7 +26,7 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
   private destinationMarker: any;
   private routePolyline: any;
   private watchId: number | null = null;
-  
+
   destinationLat = 0;
   destinationLng = 0;
   userLat = 0;
@@ -51,7 +52,7 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
       await this.initializeUserLocation(L);
       this.initializeDestinationMarker(L);
       await this.calculateAndDisplayRoute(L);
-      
+
       this.startWatchingPosition(L);
     }
   }
@@ -121,14 +122,15 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
 
   private async calculateAndDisplayRoute(L: any): Promise<void> {
     try {
-      // Use OSRM API to get the route
       const response: any = await this.http.get(
         `https://router.project-osrm.org/route/v1/driving/${this.userLng},${this.userLat};${this.destinationLng},${this.destinationLat}?overview=full&geometries=geojson`
       ).toPromise();
 
       if (response.routes && response.routes[0]) {
-        const routeCoordinates = response.routes[0].geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]]);
-        
+        const routeCoordinates = response.routes[0].geometry.coordinates.map(
+          (coord: [number, number]) => [coord[1], coord[0]]
+        );
+
         if (this.routePolyline) {
           this.routePolyline.setLatLngs(routeCoordinates);
         } else {
@@ -140,12 +142,11 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
           }).addTo(this.map);
         }
 
-        // Fit the map to the route bounds
-        this.map.fitBounds(this.routePolyline.getBounds(), { padding: [50, 50] });
+        // Do NOT auto-fit map bounds here if you want to preserve zoom/position
+        // this.map.fitBounds(this.routePolyline.getBounds(), { padding: [50, 50] });
       }
     } catch (error) {
       console.error('Error calculating route:', error);
-      // Fallback to straight line if routing fails
       this.updateRoutePolyline(L);
     }
   }
@@ -157,7 +158,6 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
           this.userLat = position.coords.latitude;
           this.userLng = position.coords.longitude;
 
-          // Update user marker
           if (this.userMarker) {
             this.userMarker.setLatLng([this.userLat, this.userLng]);
           } else {
@@ -169,20 +169,24 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
               popupAnchor: [1, -34],
               shadowSize: [41, 41]
             });
-            
+
             this.userMarker = L.marker([this.userLat, this.userLng], {
               icon: blueIcon
             }).addTo(this.map);
           }
 
-          // Recalculate route when user moves significantly
           await this.calculateAndDisplayRoute(L);
-          
-          // Keep user in view (with some padding)
-          this.map.setView([this.userLat, this.userLng], this.map.getZoom(), {
-            animate: true,
-            duration: 1
-          });
+
+          // ❌ Do not recenter or zoom the map every update
+          // this.map.setView([this.userLat, this.userLng], this.map.getZoom(), {
+          //   animate: true,
+          //   duration: 1
+          // });
+
+          // ✅ Optional: Pan only if user moves off-screen
+          // if (!this.map.getBounds().contains([this.userLat, this.userLng])) {
+          //   this.map.panTo([this.userLat, this.userLng]);
+          // }
         },
         (error) => {
           console.error('Error watching position:', error);
@@ -196,7 +200,6 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // Fallback method for straight line route
   private updateRoutePolyline(L: any): void {
     const routeCoordinates = [
       [this.userLat, this.userLng],

@@ -1,13 +1,4 @@
 <div class="video-container">
-  <!-- Warning alert that appears when objects are too close -->
-  <div *ngIf="warningActive" class="warning-alert">
-    <div class="warning-content">
-      <span class="warning-icon">⚠️</span>
-      <div>{{ warningMessage }}</div>
-      <button class="dismiss-button" (click)="warningActive = false">×</button>
-    </div>
-  </div>
-
   <!-- Full-screen video element -->
   <video #localVideo autoplay playsinline muted class="fullscreen-video"></video>
   

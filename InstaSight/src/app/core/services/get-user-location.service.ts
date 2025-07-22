@@ -34,7 +34,7 @@ export class GetUserLocationService {
           source: 'ip'
         };
       } catch (ipError) {
-        // If all fail, return unknown location
+        // If all fail, return unknown location 
         return {
           latitude: 0,
           longitude: 0,

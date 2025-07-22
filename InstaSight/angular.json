@@ -28,7 +28,13 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
               }
             ],
             "styles": [
@@ -96,12 +102,18 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+          "assets": [
+            {
+              "glob": "**/*",
+              "input": "public",
+              "output": "/"
+            },
+            {
+              "glob": "**/*",
+              "input": "src/assets",
+              "output": "assets"
+            }
+          ],
             "styles": [
               "node_modules/leaflet/dist/leaflet.css",
               "src/styles.scss"

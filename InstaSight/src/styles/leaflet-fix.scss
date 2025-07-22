@@ -1,0 +1,27 @@
+.leaflet-container {
+    .leaflet-tile {
+      filter: none;
+    }
+  
+    .leaflet-marker-icon,
+    .leaflet-marker-shadow {
+      background-image: url('/assets/leaflet/marker-icon.png');
+    }
+  
+    .leaflet-marker-icon-2x {
+      background-image: url('/assets/leaflet/marker-icon-2x.png');
+    }
+  
+    .leaflet-shadow-icon {
+      background-image: url('/assets/leaflet/marker-shadow.png');
+    }
+  
+    .leaflet-layers {
+      background-image: url('/assets/leaflet/layers.png');
+    }
+  
+    .leaflet-layers-2x {
+      background-image: url('/assets/leaflet/layers-2x.png');
+    }
+  }
+  
