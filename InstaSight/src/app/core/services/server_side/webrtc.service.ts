@@ -11,13 +11,13 @@ export class WebrtcService {
   private warningCallback: ((warning: any) => void) | null = null;
 
   async init(
-    localVideo: HTMLVideoElement, 
+    localVideo: HTMLVideoElement,
     warningCallback: (warning: any) => void
   ): Promise<void> {
     this.warningCallback = warningCallback;
-    
-    this.socket = io('https://dad-competent-warming-scott.trycloudflare.com');
-    
+
+    this.socket = io('https://instasight.click/');
+
     this.socket.on('connect', () => {
       console.log('Socket.IO connected');
     });
@@ -35,7 +35,6 @@ export class WebrtcService {
       if (data.type === 'answer') {
         try {
           await this.pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-          console.log('Remote description set successfully');
         } catch (err) {
           console.error('Failed to set remote description:', err);
         }
@@ -51,9 +50,7 @@ export class WebrtcService {
     });
 
     this.pc = new RTCPeerConnection({
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-      ],
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
       bundlePolicy: 'max-bundle',
       rtcpMuxPolicy: 'require'
     });
@@ -67,28 +64,51 @@ export class WebrtcService {
       }
     };
 
+    this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    localVideo.srcObject = this.stream;
+
+    this.stream.getTracks().forEach(track => {
+      this.pc.addTrack(track, this.stream);
+    });
+
+    const offer = await this.pc.createOffer();
+    await this.pc.setLocalDescription(offer);
+
+    this.socket.emit('message', {
+      type: 'offer',
+      offer: offer
+    });
+  }
+
+  async replaceStream(newStream: MediaStream): Promise<void> {
+    if (!this.pc) return;
+
+    this.pc.getSenders().forEach(sender => {
+      if (sender.track) {
+        this.pc.removeTrack(sender);
+      }
+    });
+
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => track.stop());
+    }
+
+    this.stream = newStream;
+
+    this.stream.getTracks().forEach(track => {
+      this.pc.addTrack(track, this.stream);
+    });
+
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-      localVideo.srcObject = this.stream;
-
-      this.stream.getTracks().forEach(track => {
-        this.pc.addTrack(track, this.stream);
-      });
-
-      const offer = await this.pc.createOffer({
-        offerToReceiveVideo: false,
-        offerToReceiveAudio: false
-      });
-      
+      const offer = await this.pc.createOffer();
       await this.pc.setLocalDescription(offer);
-
       this.socket.emit('message', {
         type: 'offer',
         offer: offer
       });
+      console.log('🔄 WebRTC stream replaced successfully');
     } catch (err) {
-      console.error('Error initializing WebRTC:', err);
-      throw err;
+      console.error('Error renegotiating WebRTC with new stream:', err);
     }
   }
 

@@ -1,12 +1,22 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, Inject, PLATFORM_ID, Input } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+  Inject,
+  PLATFORM_ID,
+  Input
+} from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { WebrtcService } from '../../core/services/server_side/webrtc.service';
+import { HammerModule } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-friends',
   templateUrl: './friends.component.html',
   styleUrls: ['./friends.component.scss'],
-  imports: [CommonModule],
+  imports: [CommonModule, HammerModule],
   standalone: true
 })
 export class FriendsComponent implements AfterViewInit, OnDestroy {
@@ -14,11 +24,12 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
   @ViewChild('permissionButton', { static: false }) permissionButton!: ElementRef<HTMLButtonElement>;
   @Input() embeddedMode = false;
 
-  // Warning system properties
   warningActive = false;
   warningMessage = '';
-  
-  // Existing properties
+  videoDevices: MediaDeviceInfo[] = [];
+  currentDeviceIndex = 0;
+  currentStream?: MediaStream;
+
   isBrowser: boolean;
   cameraAccessGranted = false;
   errorMessage: string | null = null;
@@ -26,38 +37,77 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
   private audio?: HTMLAudioElement;
   private warningTimeout?: any;
 
+  private hammer?: any;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private webrtcService: WebrtcService
+    private webrtcService: WebrtcService,
+    private elRef: ElementRef
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.isBrowser) {
       this.audio = new Audio(
         'https://orangefreesounds.com/wp-content/uploads/2023/05/Audio-cassette-stop-sound-effect.mp3'
       );
     }
   }
 
-  playOnlineSound() {
-    if (this.audio) {
-      this.audio.currentTime = 0;
-      this.audio.play().catch((err) => console.error('Could not play sound:', err));
+  ngAfterViewInit() {
+    if (!this.isBrowser) return;
+
+    this.initHammerGestures();
+
+    this.checkCameraPermissionsAndStart();
+    
+    if (this.embeddedMode && this.localVideo?.nativeElement) {
+      this.localVideo.nativeElement.style.objectFit = 'cover';
     }
   }
 
-  showWarning(message: string) {
-    this.warningActive = true;
-    this.warningMessage = message;
-    this.playOnlineSound();
-    
+  ngOnDestroy() {
+    this.webrtcService.destroy();
+
     if (this.warningTimeout) {
       clearTimeout(this.warningTimeout);
     }
-    
-    this.warningTimeout = setTimeout(() => {
-      this.warningActive = false;
-      this.warningMessage = '';
-    }, 5000);
+
+    if (this.currentStream) {
+      this.currentStream.getTracks().forEach(track => track.stop());
+    }
+
+    if (this.hammer) {
+      this.hammer.destroy();
+    }
+  }
+
+  private initHammerGestures() {
+    if (typeof window !== 'undefined' && typeof (window as any).Hammer !== 'undefined') {
+      this.hammer = new (window as any).Hammer(this.elRef.nativeElement);
+
+      // Enable double tap gesture
+      this.hammer.get('tap').set({ taps: 2 });
+
+      this.hammer.on('doubletap', () => {
+        this.switchCamera();
+      });
+    } else {
+      console.warn('HammerJS not available.');
+    }
+  }
+
+  private async checkCameraPermissionsAndStart() {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      this.cameraAccessGranted = devices.some(device => device.kind === 'videoinput' && device.label);
+
+      if (this.cameraAccessGranted) {
+        await this.enumerateVideoDevices();
+        await this.startCamera();
+        await this.initializeWebRTC();
+      }
+    } catch (err) {
+      console.error('Error checking camera permissions:', err);
+    }
   }
 
   async requestCameraPermission() {
@@ -71,15 +121,14 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
       const hasVideoPermission = devices.some(device => device.kind === 'videoinput' && device.label);
 
       if (!hasVideoPermission) {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: true, 
-          audio: false 
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         stream.getTracks().forEach(track => track.stop());
       }
 
       this.cameraAccessGranted = true;
-      this.initializeWebRTC();
+      await this.enumerateVideoDevices();
+      await this.startCamera();
+      await this.initializeWebRTC();
     } catch (err) {
       console.error('Camera access denied:', err);
       this.errorMessage = 'Camera access was denied. Please allow camera access to continue.';
@@ -89,9 +138,84 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  async enumerateVideoDevices() {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    this.videoDevices = devices.filter(d => d.kind === 'videoinput');
+    console.log(`🎥 Found ${this.videoDevices.length} camera(s):`);
+    this.videoDevices.forEach((d, i) =>
+      console.log(`[${i}] ${d.label || 'Unnamed'} (${d.deviceId})`)
+    );
+  }
+
+  async startCamera() {
+    if (!this.videoDevices.length) return;
+
+    const deviceId = this.videoDevices[this.currentDeviceIndex]?.deviceId;
+
+    try {
+      const constraints: MediaStreamConstraints = {
+        video: deviceId ? { deviceId: { exact: deviceId } } : true,
+        audio: false
+      };
+
+      if (this.currentStream) {
+        this.currentStream.getTracks().forEach(track => track.stop());
+      }
+
+      this.currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+      if (this.localVideo && this.localVideo.nativeElement) {
+        this.localVideo.nativeElement.srcObject = this.currentStream;
+      }
+
+      console.log(`🎬 Using camera: ${this.videoDevices[this.currentDeviceIndex]?.label}`);
+    } catch (err) {
+      console.error('Error accessing camera:', err);
+      this.errorMessage = 'Failed to access selected camera.';
+    }
+  }
+
+  async switchCamera() {
+    if (this.videoDevices.length <= 1) return;
+
+    if (this.currentStream) {
+      this.currentStream.getTracks().forEach(track => track.stop());
+      this.currentStream = undefined;
+    }
+
+    this.currentDeviceIndex = (this.currentDeviceIndex + 1) % this.videoDevices.length;
+
+    await this.startCamera();
+
+    if (this.localVideo?.nativeElement && this.cameraAccessGranted && this.currentStream) {
+      await this.webrtcService.replaceStream(this.currentStream);
+    }
+  }
+
+  playOnlineSound() {
+    if (this.audio) {
+      this.audio.currentTime = 0;
+      this.audio.play().catch(err => console.error('Could not play sound:', err));
+    }
+  }
+
+  showWarning(message: string) {
+    this.warningActive = true;
+    this.warningMessage = message;
+    this.playOnlineSound();
+
+    if (this.warningTimeout) {
+      clearTimeout(this.warningTimeout);
+    }
+
+    this.warningTimeout = setTimeout(() => {
+      this.warningActive = false;
+      this.warningMessage = '';
+    }, 5000);
+  }
+
   handleObjectWarning(warning: any) {
     if (warning.warning === 'TOO_CLOSE') {
-      const messages = warning.objects.map((obj: any) => 
+      const messages = warning.objects.map((obj: any) =>
         `Object too close! (Depth: ${obj.depth.toFixed(2)})`
       );
       this.showWarning(messages.join('\n'));
@@ -105,46 +229,9 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
         (warning) => this.handleObjectWarning(warning)
       );
       console.log('WebRTC initialized');
-      
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: true, 
-        audio: false 
-      });
-      this.localVideo.nativeElement.srcObject = stream;
     } catch (err) {
       console.error('Failed to initialize WebRTC:', err);
       this.errorMessage = 'Failed to initialize video connection. Please try again.';
-    }
-  }
-
-  async ngAfterViewInit() {  // Added async here
-    if (this.isBrowser) {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        this.cameraAccessGranted = devices.some(device => device.kind === 'videoinput' && device.label);
-        
-        if (this.cameraAccessGranted) {
-          await this.initializeWebRTC();  // Added await here
-        }
-      } catch (err) {
-        console.error('Error checking camera permissions:', err);
-      }
-    }
-
-    // Add embedded mode adjustments
-    if (this.embeddedMode && this.localVideo?.nativeElement) {
-      this.localVideo.nativeElement.style.objectFit = 'cover';
-    }
-  }
-
-  ngOnDestroy() {
-    this.webrtcService.destroy();
-    if (this.warningTimeout) {
-      clearTimeout(this.warningTimeout);
-    }
-    if (this.localVideo?.nativeElement?.srcObject) {
-      const stream = this.localVideo.nativeElement.srcObject as MediaStream;
-      stream.getTracks().forEach(track => track.stop());
     }
   }
 }

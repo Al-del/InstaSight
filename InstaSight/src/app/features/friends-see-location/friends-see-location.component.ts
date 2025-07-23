@@ -6,14 +6,9 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import {
-  Firestore,
-  collection,
-  doc,
-  setDoc,
-  onSnapshot,
-} from '@angular/fire/firestore';
+import { Firestore, collection, doc, getDoc, setDoc, getDocs, addDoc, query, where, updateDoc, onSnapshot } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { Subscription } from 'rxjs';
 import { FloatingFooterComponent } from '../../shared/components/floating-footer/floating-footer.component';
 import { GeocodingService } from '../../core/services/geocoding.service';
@@ -33,7 +28,17 @@ export class FriendsSeeLocationComponent implements OnInit, OnDestroy {
   locationSubscription: Subscription | undefined;
   myUid: string | null = null;
   myAddressString = 'Constanta, Romania';
+  friends: any[] = [];
+  async loadFriends() {
+    if (!this.myUid) {
+      console.warn("myUid is null; cannot load friends.");
+      return;
+    }
   
+    const friendsRef = collection(this.firestore, 'users', this.myUid, 'friends');
+    const snapshot = await getDocs(friendsRef);
+    this.friends = snapshot.docs.map(doc => doc.data());
+  }
   // Web URLs for marker icons
   private readonly MY_MARKER_URL = 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png';
   private readonly FRIEND_MARKER_URL = 'https://cdn-icons-png.flaticon.com/512/684/684908.png';
@@ -49,8 +54,16 @@ export class FriendsSeeLocationComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       import('leaflet').then((L) => {
         this.initMap(L);
-        this.watchFriends(L);
-        this.getLocationFromAddress(this.myAddressString, L);
+  
+        onAuthStateChanged(this.auth, (user) => {
+          if (user) {
+            this.myUid = user.uid;
+            this.watchFriends(L);
+            this.getLocationFromAddress(this.myAddressString, L);
+          } else {
+            console.warn("User not logged in yet.");
+          }
+        });
       });
     }
   }
@@ -113,22 +126,23 @@ export class FriendsSeeLocationComponent implements OnInit, OnDestroy {
     this.map.setView([lat, lng], 13);
   }
 
-  private watchFriends(L: typeof import('leaflet')): void {
-    const user = this.auth.currentUser;
-    if (!user) return;
-
-    const friends = ['friend_uid_1', 'friend_uid_2']; // replace with actual logic
-
-    friends.forEach((friendUid) => {
+  private async watchFriends(L: typeof import('leaflet')): Promise<void> {
+    await this.loadFriends();
+    const friends = this.friends;
+    friends.forEach((friend) => {
+      const friendUid = friend.uid || friend; // if friend is a UID string or has a UID field
       const friendDocRef = doc(this.firestore, 'locations', friendUid);
       onSnapshot(friendDocRef, (docSnap) => {
         const data = docSnap.data();
         if (data && data['lat'] && data['lng']) {
+          console.log(`Friend ${friendUid} location:`, data['lat'], data['lng']);
           this.updateFriendMarker(friendUid, data['lat'], data['lng'], L);
         }
       });
     });
   }
+  
+  
 
   private updateFriendMarker(uid: string, lat: number, lng: number, L: typeof import('leaflet')): void {
     if (!this.map) return;
