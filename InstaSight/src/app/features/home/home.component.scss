@@ -79,3 +79,18 @@ button {
   border: 3px solid $mint;
   position: relative;
 }
+.mic-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  img {
+    width: 32px;
+    height: 32px;
+  }
+
+  &:hover img {
+    filter: brightness(1.2);
+  }
+}

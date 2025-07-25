@@ -77,7 +77,8 @@
             "host": "0.0.0.0",
             "port": 4200,
           "allowedHosts": [
-            "herring-social-happily.ngrok-free.app"
+            "herring-social-happily.ngrok-free.app",
+            "similarly-nearby-sloth.ngrok-free.app"
           ]
           },
           "configurations": {

@@ -11,7 +11,8 @@ import {
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { WebrtcService } from '../../core/services/server_side/webrtc.service';
 import { HammerModule } from '@angular/platform-browser';
-
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth'; // Add this import
 @Component({
   selector: 'app-friends',
   templateUrl: './friends.component.html',
@@ -34,15 +35,21 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
   cameraAccessGranted = false;
   errorMessage: string | null = null;
   isLoading = false;
+  currentUserId: string | null = null; // Add this property to store the UID
+
   private audio?: HTMLAudioElement;
   private warningTimeout?: any;
-
   private hammer?: any;
+  private authSubscription: any; // To store the auth state subscription
+    private baseline : number = 0;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private webrtcService: WebrtcService,
-    private elRef: ElementRef
+    private elRef: ElementRef,
+    private firestore: Firestore,
+    private auth: Auth ,
+ //  private speechService : TtsService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (this.isBrowser) {
@@ -52,29 +59,41 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
     if (!this.isBrowser) return;
 
-    this.initHammerGestures();
-
-    this.checkCameraPermissionsAndStart();
-    
-    if (this.embeddedMode && this.localVideo?.nativeElement) {
-      this.localVideo.nativeElement.style.objectFit = 'cover';
-    }
+    // Initialize auth state listener
+    this.authSubscription = onAuthStateChanged(this.auth, async (user) => {
+      if (user) {
+        this.currentUserId = user.uid;
+        console.log('User UID:', this.currentUserId);
+        
+        this.initHammerGestures();
+        await this.loadAndLogBaseline(this.currentUserId); // Use the actual UID
+        this.checkCameraPermissionsAndStart();
+        
+        if (this.embeddedMode && this.localVideo?.nativeElement) {
+          this.localVideo.nativeElement.style.objectFit = 'cover';
+        }
+      } else {
+        console.log('No user is signed in');
+        this.currentUserId = null;
+      }
+    });
   }
 
   ngOnDestroy() {
-    this.webrtcService.destroy();
+    if (this.authSubscription) {
+      this.authSubscription(); 
+    }
 
+    this.webrtcService.destroy();
     if (this.warningTimeout) {
       clearTimeout(this.warningTimeout);
     }
-
     if (this.currentStream) {
       this.currentStream.getTracks().forEach(track => track.stop());
     }
-
     if (this.hammer) {
       this.hammer.destroy();
     }
@@ -218,20 +237,54 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
       const messages = warning.objects.map((obj: any) =>
         `Object too close! (Depth: ${obj.depth.toFixed(2)})`
       );
-      this.showWarning(messages.join('\n'));
     }
   }
 
   async initializeWebRTC() {
     try {
-      await this.webrtcService.init(
-        this.localVideo.nativeElement,
-        (warning) => this.handleObjectWarning(warning)
-      );
+     await this.webrtcService.init(
+  this.localVideo.nativeElement,
+  (warning) => this.handleObjectWarning(warning),
+  this.baseline,
+  (eegWarning) => this.handleConcentrationWarning(eegWarning)
+);
       console.log('WebRTC initialized');
     } catch (err) {
       console.error('Failed to initialize WebRTC:', err);
       this.errorMessage = 'Failed to initialize video connection. Please try again.';
     }
   }
+  private async loadAndLogBaseline(uid: string | null): Promise<void> {
+    if (!uid || uid === 'anonymous') {
+      console.log('No user or anonymous - skipping baseline load');
+      return;
+    }
+
+    try {
+      const userDocRef = doc(this.firestore, `users/${uid}`);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (userData && 'baseline' in userData) {
+          const baselineData = userData['baseline'];
+      //    console.log('🔥 Loaded baseline from Firestore:', baselineData.status);
+          this.baseline = baselineData.status;
+        } else {
+          console.log('User document exists but has no baseline field');
+        }
+      } else {
+        console.log('No user document found in Firestore');
+      }
+    } catch (error) {
+      console.error('❌ Error loading baseline from Firestore:', error);
+      this.errorMessage = 'Failed to load user data';
+    }
+  }
+  handleConcentrationWarning(data: any) {
+  const value = data.value?.toFixed(2);
+  const threshold = data.threshold?.toFixed(2);
+  const message = `⚠️ Concentration too low! (${value} < ${threshold})`;
+  this.showWarning(message);
+}
 }

@@ -1,0 +1,27 @@
+<div *ngIf="checking()" class="loader">
+  <div class="loader-text">Checking login status...</div>
+</div>
+
+<div *ngIf="!checking() && isLoggedIn()" class="baseline-container">
+  <h2 class="title">🎧 Concentration Baseline Recording</h2>
+
+  <div *ngIf="!recording()" class="intro">
+    <p class="description">
+      Find a quiet space. When you're ready, press the button below and focus for 15 seconds while a calming sound plays.
+    </p>
+    <button class="start-btn" (click)="startBaselineRecording()">Start Baseline</button>
+  </div>
+
+  <div *ngIf="recording()" class="recording-section">
+    <p class="focus-message">Focus your attention... recording in progress.</p>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progress()"></div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!checking() && !isLoggedIn()" class="not-logged-in">
+  <p class="animated-message">🚫 You are not logged in!</p>
+</div>
+
+<app-vertical-footer></app-vertical-footer>

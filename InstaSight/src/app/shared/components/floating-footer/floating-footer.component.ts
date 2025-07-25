@@ -89,4 +89,11 @@ export class FloatingFooterComponent implements OnInit, AfterViewInit {
     });
     setTimeout(() => this.router.navigate(['/view_loc']), 50);
   }
+  goToBrain(){
+    this.userDataService.updateUserData({
+      email: this.email,
+      username: this.username
+    });
+    setTimeout(() => this.router.navigate(['/brain']), 50);
+  }
 }

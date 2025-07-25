@@ -7,6 +7,7 @@ import { NavigationPageComponent } from './features/navigation-page/navigation-p
 import { FriendsComponent } from './features/friends/friends.component';
 import { FriendsAddAndMessageComponent } from './features/friends-add-and-message/friends-add-and-message.component';
 import { FriendsSeeLocationComponent } from './features/friends-see-location/friends-see-location.component';
+import { InstaBrainComponent } from './features/insta-brain/insta-brain.component';
 export const routes: Routes = [
     {path : "login", component :LoginComponent },
     {path : "", component : StartPageComponent},
@@ -15,5 +16,6 @@ export const routes: Routes = [
     {path : "navigate", component : NavigationPageComponent},
     {path : "friends", component : FriendsComponent },
     {path : "message", component : FriendsAddAndMessageComponent},
-    {path : "view_loc", component : FriendsSeeLocationComponent}
+    {path : "view_loc", component : FriendsSeeLocationComponent},
+    {path : "brain", component :InstaBrainComponent}
 ];

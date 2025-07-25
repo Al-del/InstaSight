@@ -6,6 +6,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore'; 
+
 import { environment_firebase } from './environment/environment';
 import { provideHttpClient } from '@angular/common/http';
 export const appConfig: ApplicationConfig = {

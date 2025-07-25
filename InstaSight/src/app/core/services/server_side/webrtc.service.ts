@@ -9,26 +9,39 @@ export class WebrtcService {
   private pc!: RTCPeerConnection;
   private stream!: MediaStream;
   private warningCallback: ((warning: any) => void) | null = null;
+  private baseline :number | null = null;
+  private concentrationCallback: ((data: any) => void) | null = null;
 
-  async init(
-    localVideo: HTMLVideoElement,
-    warningCallback: (warning: any) => void
-  ): Promise<void> {
-    this.warningCallback = warningCallback;
+async init(
+  localVideo: HTMLVideoElement,
+  warningCallback: (warning: any) => void,
+  baseline: number,
+  concentrationCallback?: (data: any) => void
+): Promise<void> {
+  this.baseline = baseline;
+  this.warningCallback = warningCallback;
+  this.concentrationCallback = concentrationCallback || null;
 
-    this.socket = io('https://instasight.click/');
+  this.socket = io('https://instasight.click/');
 
-    this.socket.on('connect', () => {
-      console.log('Socket.IO connected');
-    });
+  this.socket.on('connect', () => {
+    console.log('Socket.IO connected');
+    if (this.baseline !== null) {
+      this.socket.emit('baseline_info', { baseline: this.baseline });
+    }
+  });
 
-    this.socket.on('object_warning', (data: any) => {
-      console.log('Object warning received:', data);
-      if (this.warningCallback) {
-        this.warningCallback(data);
-      }
-    });
+  this.socket.on('object_warning', (data: any) => {
+  console.log("⚠️ WARNING OBJECT!!", data);
+  this.speak("Warning: Go slightly on " + data.safe_dir + "!");
+  });
 
+  this.socket.on('concentration_warning', (data: any) => {
+    console.warn('⚠️ EEG Concentration Warning received:', data);
+    if (this.concentrationCallback) {
+      this.concentrationCallback(data);
+    }
+  });
     this.socket.on('message', async (data: any) => {
       console.log('Received from server:', data);
 
@@ -124,4 +137,18 @@ export class WebrtcService {
       this.pc.close();
     }
   }
+private isSpeakingCooldown = false;
+
+private speak(message: string): void {
+  if (this.isSpeakingCooldown) return;
+
+  const utterance = new SpeechSynthesisUtterance(message);
+  utterance.lang = 'en-US';
+  window.speechSynthesis.speak(utterance);
+
+  this.isSpeakingCooldown = true;
+  setTimeout(() => {
+    this.isSpeakingCooldown = false;
+  }, 2500); // 500 milliseconds
+}
 }

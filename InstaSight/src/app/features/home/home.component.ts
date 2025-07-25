@@ -48,4 +48,34 @@ export class HomeComponent {
       });
     }
   }
+startListening() {
+  const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+  if (!SpeechRecognition) {
+    alert('Speech recognition not supported in this browser.');
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = (event: any) => {
+    const transcript = event.results[0][0].transcript;
+    this.location = transcript;
+
+    if (this.location.trim()) {
+      this.onStart();
+    }
+  };
+
+  recognition.onerror = (event: any) => {
+    console.error('Speech recognition error:', event.error);
+    alert('Could not recognize speech. Please try again.');
+  };
+
+  recognition.start();
+}
+
+
 }

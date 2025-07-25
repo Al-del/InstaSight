@@ -156,7 +156,7 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
         const now = Date.now();
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
-        console.log(`📍 Position updated: ${lat}, ${lng} @ ${new Date(now).toLocaleTimeString()}`);
+        console.log("📍 Position updated: ${lat}, ${lng} @ ${new Date(now).toLocaleTimeString()}");
 
         let heading = 0;
         if (this.previousPosition && now - this.previousPosition.timestamp < 10000) {
@@ -187,7 +187,7 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
     }
 
     const cs = this.steps[this.currentStepIndex];
-    console.log(`🔁 Evaluating step #${this.currentStepIndex}`, cs);
+    console.log("🔁 Evaluating step #${this.currentStepIndex}, cs");
 
     const [lng, lat] = cs.maneuver.location;
     const dist = this.calculateDistanceMeters(this.userLat, this.userLng, lat, lng);
@@ -200,7 +200,7 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
 
       if (rel.direction !== this.lastAnnouncedDirection) {
         this.lastAnnouncedDirection = rel.direction;
-
+        console.log(rel.direction);
         let text = '';
         switch (rel.direction) {
           case 'straight': text = 'Continue straight'; break;
@@ -224,14 +224,17 @@ export class NavigationPageComponent implements AfterViewInit, OnDestroy {
       }
     }
   }
+private calculateDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371000; // Earth radius in meters
+  const dLat = this.deg2rad(lat2 - lat1);
+  const dLon = this.deg2rad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+            Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
 
-  private calculateDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371000;
-    const dLat = this.deg2rad(lat2 - lat1);
-    const dLon = this.deg2rad(lon2 - lon1);
-    const a = Math.sin(dLat/2)**2 + Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.sin(dLon/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
 
   private deg2rad(deg: number): number { return deg * Math.PI/180; }
   private rad2deg(rad: number): number { return rad * 180/Math.PI; }

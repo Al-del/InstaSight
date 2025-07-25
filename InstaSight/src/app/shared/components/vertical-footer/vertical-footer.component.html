@@ -10,8 +10,8 @@
     <li (click)="goToView()">
       <a [ngClass]="{'active': activeRoute.includes('/view_loc')}">InstaView</a>
     </li>
-    <li>
-      <a [ngClass]="{'active': activeRoute.includes('/contact')}">Contact</a>
+    <li (click)="goToBrain()">
+      <a [ngClass]="{'active': activeRoute.includes('/brain')}">InstaBrain</a>
     </li>
   </ul>
   <button class="toggle-btn" (click)="toggleCollapse()">

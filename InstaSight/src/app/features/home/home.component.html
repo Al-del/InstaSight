@@ -12,8 +12,11 @@
         required
         aria-label="Enter your location"
       />
-  
+      
       <button type="submit">Start Journey</button>
+          <button type="button" class="mic-button" (click)="startListening()" title="Speak your location">
+      <img src="https://cdn-icons-png.flaticon.com/512/61/61012.png" alt="Mic" />
+    </button>
     </form>
   </div>
   <app-vertical-footer [email]="email" [username]="username"></app-vertical-footer>
