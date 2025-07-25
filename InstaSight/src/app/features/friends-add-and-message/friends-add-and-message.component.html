@@ -1,33 +1,52 @@
-<div class="container" *ngIf="currentUserId; else loginMessage">
-    <div class="sidebar">
-      <h3>{{ email }}</h3>
-      <input [(ngModel)]="friendSearchEmail" placeholder="Search friend by email" />
-      <button (click)="addFriend()">Add Friend</button>
-  
-      <h4>Your Friends</h4>
-      <ul>
-        <li *ngFor="let friend of friends" (click)="selectFriend(friend)">
-          {{ friend.email }}
-        </li>
-      </ul>
-      <button (click)="logout()">Logout</button>
+<div class="insta-friends-container" *ngIf="currentUserId; else loginMessage">
+  <!-- LEFT COLUMN: Add Friend & Friends List -->
+  <div class="left-column">
+    <div class="card add-friend">
+      <h2>Add Helper</h2>
+      <input
+        type="email"
+        [(ngModel)]="friendSearchEmail"
+        placeholder="Enter helper's email"
+        aria-label="Helper Email"
+      />
+      <button (click)="addFriend()">Send Invitation</button>
     </div>
-  
-    <div class="chat-window" *ngIf="selectedFriend">
-      <h3>Chat with {{ selectedFriend.email }}</h3>
-      <div class="messages">
-        <div *ngFor="let msg of messages" [class.self]="msg.sender === currentUserId">
-          {{ msg.text }}
+
+    <div class="card friends-list">
+      <h3>Your Helpers</h3>
+      <div *ngFor="let friend of friends" class="friend-card" (click)="selectFriend(friend)">
+        <div class="avatar">{{ getInitials(friend.email) }}</div>
+        <div class="friend-info">
+          <strong>{{ truncateEmail(friend.email) }}</strong>
+          <span class="role">Helper</span>
         </div>
       </div>
-      <input [(ngModel)]="newMessage" placeholder="Type a message" />
-      <button (click)="sendMessage()">Send</button>
     </div>
+
+    <button class="logout-btn" (click)="logout()">Logout</button>
   </div>
-  
-  <ng-template #loginMessage>
-    <p>Please log in to use the chat app.</p>
-  </ng-template>
-  
-  <app-vertical-footer></app-vertical-footer>
-  
+
+  <!-- RIGHT COLUMN: Chat -->
+  <div class="right-column" *ngIf="selectedFriend">
+    <div class="chat-header">
+      <h3>Chat with {{ selectedFriend.email }}</h3>
+    </div>
+    <div class="messages">
+      <div
+        *ngFor="let msg of messages"
+        [class.self]="msg.sender === currentUserId"
+        class="message-bubble"
+      >
+        {{ msg.text }}
+      </div>
+    </div>
+    <input [(ngModel)]="newMessage" placeholder="Type a message..." />
+    <button (click)="sendMessage()">Send</button>
+  </div>
+</div>
+
+<ng-template #loginMessage>
+  <p>Please log in to use the chat app.</p>
+</ng-template>
+
+<app-vertical-footer></app-vertical-footer>

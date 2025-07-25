@@ -1,100 +1,138 @@
-.container {
+.insta-friends-container {
   display: flex;
-  justify-content: center;  // horizontal center
-  align-items: center;      // vertical center
-  height: 100vh;            // full viewport height
+  padding: 2rem;
   gap: 2rem;
-  padding: 1rem;
+  background-color: #f6f8fa;
+  padding-left: 260px;
+  min-height: 100vh;
   box-sizing: border-box;
 
-  .sidebar, .chat-window {
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-    padding: 1rem;
-  }
-
-  .sidebar {
-    width: 280px;
+  .left-column {
+    width: 300px;
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
 
-    h3, h4 {
-      margin: 0 0 1rem 0;
-      text-align: center;
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
     }
 
-    input {
-      padding: 0.5rem;
-      margin-bottom: 0.75rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-
-    button {
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border: none;
-      border-radius: 4px;
-      background-color: #355834;
-      color: white;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-      ///638a62
-      /// 355834
-      &:hover {
-        background-color: #638a62;
+    .add-friend {
+      input {
+        width: 100%;
+        padding: 0.6rem;
+        font-size: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
       }
-    }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 1rem 0;
-      overflow-y: auto;
-      max-height: 300px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-
-      li {
-        padding: 0.5rem;
+      button {
+        width: 100%;
+        padding: 0.6rem;
+        font-size: 1rem;
+        background-color: #28a745;
+        border: none;
+        border-radius: 6px;
+        color: white;
         cursor: pointer;
-        border-bottom: 1px solid #eee;
 
         &:hover {
-          background-color: #e6f0ff;
+          background-color: #218838;
         }
       }
     }
+
+    .friends-list {
+      .friend-card {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-bottom: 0.5rem;
+
+        &:hover {
+          background-color: #f0f4f8;
+        }
+
+        .avatar {
+          background-color: #dff0df;
+          color: #355834;
+          font-weight: bold;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 0.75rem;
+        }
+
+        .friend-info {
+          strong {
+            display: block;
+          }
+
+          .role {
+            font-size: 0.75rem;
+            color: #777;
+          }
+        }
+      }
+    }
+
+    .logout-btn {
+      margin-top: auto;
+      padding: 0.6rem;
+      border: none;
+      background-color: #dc3545;
+      color: white;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #c82333;
+      }
+    }
   }
 
-  .chat-window {
+  .right-column {
     flex-grow: 1;
-    max-width: 600px;
     display: flex;
     flex-direction: column;
 
-    h3 {
-      margin-top: 0;
+    .chat-header {
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
       margin-bottom: 1rem;
-      text-align: center;
+
+      h3 {
+        margin: 0;
+      }
     }
 
     .messages {
-      flex-grow: 1;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      background: white;
       padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       overflow-y: auto;
-      max-height: 400px;
-      background-color: white;
+      flex-grow: 1;
+      max-height: 500px;
 
-      div {
+      .message-bubble {
+        padding: 0.6rem 1rem;
+        border-radius: 18px;
         margin-bottom: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 15px;
         max-width: 70%;
         word-wrap: break-word;
 
@@ -105,7 +143,7 @@
         }
 
         &:not(.self) {
-          background-color: #f1f0f0;
+          background-color: #e9ecef;
           color: black;
           margin-right: auto;
         }
@@ -113,29 +151,27 @@
     }
 
     input {
-      padding: 0.5rem;
       margin-top: 1rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+      padding: 0.7rem 1rem;
       font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
       width: 100%;
       box-sizing: border-box;
     }
 
     button {
-      margin-top: 0.5rem;
-      padding: 0.5rem;
+      margin-top: 0.75rem;
+      padding: 0.65rem;
+      font-size: 1rem;
+      background-color: #007bff;
       border: none;
-      border-radius: 4px;
-      background-color: #28a745;
+      border-radius: 6px;
       color: white;
       cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-      width: 100%;
 
       &:hover {
-        background-color: #1e7e34;
+        background-color: #0069d9;
       }
     }
   }

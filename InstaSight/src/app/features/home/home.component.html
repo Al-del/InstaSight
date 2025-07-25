@@ -1,22 +1,43 @@
-<div class="container">
-    <h1>👋 Hey there!</h1>
+<div class="main-panel">
+  <div class="card">
+    <div class="icon-circle">
+      <img src="https://img.icons8.com/ios-filled/50/4CAF50/navigation.png" alt="Navigation Icon" />
+    </div>
+    <h1>Hey there! 👋</h1>
     <p class="subtitle">Ready to begin your traveling adventure?</p>
-  
+
     <form (ngSubmit)="onStart()">
-      <label for="location">Please type your location to start:</label>
-      <input
-        type="text"
-        id="location"
-        [(ngModel)]="location"
-        name="location"
-        required
-        aria-label="Enter your location"
-      />
-      
-      <button type="submit">Start Journey</button>
-          <button type="button" class="mic-button" (click)="startListening()" title="Speak your location">
-      <img src="https://cdn-icons-png.flaticon.com/512/61/61012.png" alt="Mic" />
-    </button>
+      <label for="location">Please share your location to start:</label>
+      <div class="input-group">
+        <input
+          type="text"
+          id="location"
+          [(ngModel)]="location"
+          name="location"
+          required
+          placeholder="Enter your current location..."
+          aria-label="Enter your location"
+        />
+        <button type="button" class="mic-button" (click)="startListening()" title="Speak your location">
+          <img src="https://img.icons8.com/ios-filled/24/microphone.png" alt="Mic" />
+        </button>
+      </div>
+      <button type="submit" class="start-btn">Start Journey</button>
     </form>
+
+    <div class="options">
+      <div class="option">
+        <img src="https://img.icons8.com/ios-filled/24/speaker.png" alt="Voice" />
+        <span>Voice Guidance</span>
+      </div>
+      <div class="option">
+        <img src="https://img.icons8.com/ios-filled/24/lightning-bolt.png" alt="Haptic" />
+        <span>Haptic Feedback</span>
+      </div>
+    </div>
+
+    <p class="footer-text">Designed for accessibility • Helper-friendly interface</p>
   </div>
-  <app-vertical-footer [email]="email" [username]="username"></app-vertical-footer>
+</div>
+
+<app-vertical-footer [email]="email" [username]="username"></app-vertical-footer>

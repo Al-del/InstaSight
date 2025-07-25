@@ -1,25 +1,60 @@
+<!-- Loader when checking -->
 <div *ngIf="checking()" class="loader">
   <div class="loader-text">Checking login status...</div>
 </div>
 
+<!-- Main content -->
 <div *ngIf="!checking() && isLoggedIn()" class="baseline-container">
-  <h2 class="title">🎧 Concentration Baseline Recording</h2>
+  <div class="baseline-box">
 
-  <div *ngIf="!recording()" class="intro">
-    <p class="description">
-      Find a quiet space. When you're ready, press the button below and focus for 15 seconds while a calming sound plays.
-    </p>
-    <button class="start-btn" (click)="startBaselineRecording()">Start Baseline</button>
-  </div>
+    <!-- Title and Description -->
+    <div class="header-section">
+      <div class="icon">🎧</div>
+      <h2 class="title">Concentration Baseline Recording</h2>
+      <p class="description">
+        Find a quiet space. When you're ready, press the button below and focus for 15 seconds while a calming sound plays.
+      </p>
+    </div>
 
-  <div *ngIf="recording()" class="recording-section">
-    <p class="focus-message">Focus your attention... recording in progress.</p>
-    <div class="progress-bar">
-      <div class="progress-fill" [style.width.%]="progress()"></div>
+    <!-- Recording Inactive -->
+    <div *ngIf="!recording() && !recordingComplete()" class="intro">
+      <button class="start-btn" (click)="startBaselineRecording()">Start Baseline</button>
+    </div>
+
+    <!-- Recording In Progress -->
+    <div *ngIf="recording()" class="recording-section">
+      <p class="focus-message">Recording in progress...</p>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progress()"></div>
+      </div>
+      <p class="recording-tip">Stay focused and relaxed. Breathe naturally.</p>
+      <button class="cancel-btn" (click)="cancelRecording()">Cancel Recording</button>
+    </div>
+
+    <!-- Recording Complete -->
+    <div *ngIf="recordingComplete()" class="completion-state">
+      <div class="completion-icon">✅</div>
+      <h3 class="completion-title">Baseline Recording Complete!</h3>
+      <p class="completion-text">
+        Your concentration baseline has been successfully recorded and saved.
+      </p>
+
+      <div class="quality-bar-container">
+        <label class="quality-label">Recording Quality:</label>
+        <div class="quality-bar">
+          <div class="quality-fill" [style.width.%]="qualityPercentage"></div>
+        </div>
+        <span class="quality-status">Excellent</span>
+      </div>
+
+      <div class="completion-actions">
+        <button class="record-again-btn" (click)="startBaselineRecording()">Record New Baseline</button>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- Not Logged In -->
 <div *ngIf="!checking() && !isLoggedIn()" class="not-logged-in">
   <p class="animated-message">🚫 You are not logged in!</p>
 </div>

@@ -2,11 +2,9 @@ import { Component, computed, inject, signal, OnInit, OnDestroy } from '@angular
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { HttpClient } from '@angular/common/http';
-
 import { Auth, authState } from '@angular/fire/auth';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { lastValueFrom } from 'rxjs';
-
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
 
 @Component({
@@ -27,8 +25,10 @@ export class InstaBrainComponent implements OnInit, OnDestroy {
 
   recording = signal(false);
   progress = signal(0);
-  private interval: any;
+  recordingComplete = signal(false);
+  qualityPercentage = 90;
 
+  private interval: any;
   private audio = new Audio('https://orangefreesounds.com/wp-content/uploads/2023/05/Audio-cassette-stop-sound-effect.mp3');
 
   constructor() {
@@ -52,6 +52,7 @@ export class InstaBrainComponent implements OnInit, OnDestroy {
 
   async startBaselineRecording() {
     this.recording.set(true);
+    this.recordingComplete.set(false);
     this.progress.set(0);
 
     this.audio.currentTime = 0;
@@ -64,17 +65,13 @@ export class InstaBrainComponent implements OnInit, OnDestroy {
 
     const uid = this.authStateSig()?.uid || 'anonymous';
 
-    // ✅ Send request in background and save to Firestore
     lastValueFrom(this.http.post('http://instasight.click/baseline', {
       user: uid,
       timestamp: new Date().toISOString()
     })).then(async (response: any) => {
-      console.log('✅ Baseline received:', response.status);
-
       if (uid !== 'anonymous') {
         const userDocRef = doc(this.firestore, `users/${uid}`);
-        await setDoc(userDocRef, { baseline: response }, { merge: true });  // 🔥 merge into user's document
-        console.log('✅ Baseline pushed as a field to Firestore');
+        await setDoc(userDocRef, { baseline: response }, { merge: true });
       }
     }).catch(error => {
       console.error('❌ Error sending or saving baseline:', error);
@@ -94,12 +91,25 @@ export class InstaBrainComponent implements OnInit, OnDestroy {
 
   stopBaselineRecording() {
     this.recording.set(false);
+    this.recordingComplete.set(true);
     clearInterval(this.interval);
 
     this.audio.pause();
     this.audio.currentTime = 0;
     this.audio.loop = false;
+  }
 
-    alert('✅ Baseline recording complete!');
+  cancelRecording() {
+    clearInterval(this.interval);
+    this.recording.set(false);
+    this.progress.set(0);
+
+    this.audio.pause();
+    this.audio.currentTime = 0;
+    this.audio.loop = false;
+  }
+
+  goToNavigation() {
+    console.log('➡️ Navigating to next step...');
   }
 }

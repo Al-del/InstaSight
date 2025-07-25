@@ -1,18 +1,40 @@
 .baseline-container {
+  padding: 3rem 1.5rem 2rem 260px; // offset to start after sidebar
+  box-sizing: border-box;
+  min-height: 100vh;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.baseline-box {
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  width: 100%;
   text-align: center;
-  padding: 2rem;
-  animation: fadeIn 1s ease-in;
+  animation: fadeIn 0.8s ease;
+}
+
+.header-section .icon {
+  font-size: 3rem;
+  color: #4a90e2;
+  margin-bottom: 0.5rem;
 }
 
 .title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #4a90e2;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #2767cc;
 }
 
 .description {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   margin-bottom: 1.5rem;
+  color: #333;
 }
 
 .start-btn {
@@ -41,6 +63,27 @@
   animation: pulse 2s infinite;
 }
 
+.recording-tip {
+  color: #555;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.cancel-btn {
+  margin-top: 1.2rem;
+  background-color: #fff;
+  border: 2px solid #dc3545;
+  color: #dc3545;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #ffe6e6;
+  }
+}
+
 .progress-bar {
   width: 80%;
   height: 20px;
@@ -56,19 +99,128 @@
   transition: width 1s linear;
 }
 
+// Completion styles
+.completion-state {
+  margin-top: 2rem;
+  animation: fadeIn 0.8s ease;
+}
+
+.completion-icon {
+  font-size: 2.5rem;
+  background-color: #e6f7ec;
+  color: #34a853;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.completion-title {
+  color: #1e8e3e;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.completion-text {
+  color: #444;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+// Quality indicator
+.quality-bar-container {
+  background-color: #eafaf1;
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 400px;
+  text-align: left;
+}
+
+.quality-label {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.quality-bar {
+  height: 12px;
+  background: #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.quality-fill {
+  height: 100%;
+  background-color: #34a853;
+  transition: width 0.5s ease;
+}
+
+.quality-status {
+  float: right;
+  color: #1e8e3e;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.completion-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.record-again-btn {
+  background: white;
+  border: 1px solid #1a73e8;
+  color: #1a73e8;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f7ff;
+  }
+}
+
+.continue-btn {
+  background-color: #1e8e3e;
+  color: white;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #187c30;
+  }
+}
+
+// Loader
 .loader-text {
   text-align: center;
   font-style: italic;
   color: #666;
-  margin-top: 20px;
+  margin-top: 40px;
+  font-size: 1.2rem;
 }
 
-.animated-message {
+.not-logged-in .animated-message {
   animation: pulse 1.5s infinite;
   color: red;
   font-weight: bold;
   text-align: center;
   font-size: 1.5rem;
+  margin-top: 2rem;
 }
 
 @keyframes pulse {

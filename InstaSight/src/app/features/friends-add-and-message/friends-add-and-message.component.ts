@@ -137,5 +137,18 @@ export class FriendsAddAndMessageComponent implements OnInit, OnDestroy {
     await signOut(this.auth);
     this.router.navigate(["/"]);
   }
-  
+  getInitials(email: string): string {
+  return email
+    .split('@')[0]
+    .split('.')
+    .map(part => part.charAt(0).toUpperCase())
+    .join('')
+    .slice(0, 2); // Max 2 characters
+}
+
+truncateEmail(email: string): string {
+  const name = email.split('@')[0];
+  return name.length > 8 ? name.slice(0, 7) + '…' : name;
+}
+
 }
