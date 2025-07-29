@@ -85,8 +85,8 @@ export class FriendsSeeLocationComponent implements OnInit, OnDestroy {
   private getLocationFromAddress(address: string, L: typeof import('leaflet')): void {
     this.geocodingService.getCoordinates(address).subscribe(
       ({ lat, lng }) => {
-        this.saveMyLocation(lat, lng);
-        this.updateMyMarker(lat, lng, L);
+       // this.saveMyLocation(lat, lng);
+      //  this.updateMyMarker(lat, lng, L);
       },
       (error) => {
         console.error('Geocoding failed:', error);
