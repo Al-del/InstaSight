@@ -82,7 +82,6 @@ export class FriendsAddAndMessageComponent implements OnInit, OnDestroy {
       const friendData = friendDoc.data();
       const friendUid = friendDoc.id;
 
-      // Save friendship (both ways)
       const myFriendRef = doc(this.firestore, 'users', this.currentUserId, 'friends', friendUid);
       const theirFriendRef = doc(this.firestore, 'users', friendUid, 'friends', this.currentUserId);
 

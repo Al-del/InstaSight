@@ -6,7 +6,7 @@
   <input type="password" [(ngModel)]="password" name="password" placeholder="Password" />
   <button type="submit" class="login-btn">Log In</button>
 </form>
-  <button class="google-btn">
+  <button class="google-btn" (click)="sign_in_with_google()">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/120px-Google_Favicon_2025.svg.png" alt="Google" width="20" height="20" />
     Continue with Google
   </button>

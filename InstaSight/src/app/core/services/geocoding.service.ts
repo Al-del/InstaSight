@@ -6,7 +6,7 @@ import { Observable, map } from 'rxjs';
   providedIn: 'root'
 })
 export class GeocodingService {
-  private apiKey = '9325a41812344779bb83d89124ed47d0'; // Your OpenCage API key
+  private apiKey = '9325a41812344779bb83d89124ed47d0'; 
 
   constructor(private http: HttpClient) {}
 

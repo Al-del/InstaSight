@@ -12,7 +12,7 @@ import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { WebrtcService } from '../../core/services/server_side/webrtc.service';
 import { HammerModule } from '@angular/platform-browser';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth'; // Add this import
+import { Auth, onAuthStateChanged } from '@angular/fire/auth'; 
 @Component({
   selector: 'app-friends',
   templateUrl: './friends.component.html',
@@ -35,12 +35,12 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
   cameraAccessGranted = false;
   errorMessage: string | null = null;
   isLoading = false;
-  currentUserId: string | null = null; // Add this property to store the UID
+  currentUserId: string | null = null; 
 
   private audio?: HTMLAudioElement;
   private warningTimeout?: any;
   private hammer?: any;
-  private authSubscription: any; // To store the auth state subscription
+  private authSubscription: any;
     private baseline : number = 0;
 
   constructor(
@@ -49,7 +49,6 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
     private elRef: ElementRef,
     private firestore: Firestore,
     private auth: Auth ,
- //  private speechService : TtsService
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (this.isBrowser) {
@@ -62,14 +61,13 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
   async ngAfterViewInit() {
     if (!this.isBrowser) return;
 
-    // Initialize auth state listener
     this.authSubscription = onAuthStateChanged(this.auth, async (user) => {
       if (user) {
         this.currentUserId = user.uid;
         console.log('User UID:', this.currentUserId);
         
         this.initHammerGestures();
-        await this.loadAndLogBaseline(this.currentUserId); // Use the actual UID
+        await this.loadAndLogBaseline(this.currentUserId); 
         this.checkCameraPermissionsAndStart();
         
         if (this.embeddedMode && this.localVideo?.nativeElement) {
@@ -103,7 +101,6 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
     if (typeof window !== 'undefined' && typeof (window as any).Hammer !== 'undefined') {
       this.hammer = new (window as any).Hammer(this.elRef.nativeElement);
 
-      // Enable double tap gesture
       this.hammer.get('tap').set({ taps: 2 });
 
       this.hammer.on('doubletap', () => {
@@ -169,7 +166,7 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
   async startCamera() {
     if (!this.videoDevices.length) return;
 
-    const deviceId = this.videoDevices[this.currentDeviceIndex]?.deviceId;
+    const deviceId = this.videoDevices[this.currentDeviceIndex ]?.deviceId;
 
     try {
       const constraints: MediaStreamConstraints = {
@@ -268,7 +265,6 @@ export class FriendsComponent implements AfterViewInit, OnDestroy {
         const userData = userDoc.data();
         if (userData && 'baseline' in userData) {
           const baselineData = userData['baseline'];
-      //    console.log('🔥 Loaded baseline from Firestore:', baselineData.status);
           this.baseline = baselineData.status;
         } else {
           console.log('User document exists but has no baseline field');

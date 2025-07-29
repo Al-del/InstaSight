@@ -117,8 +117,8 @@ export class FriendsSeeLocationComponent implements OnInit, OnDestroy {
         icon: L.icon({
           iconUrl: this.MY_MARKER_URL,
           iconSize: [32, 32],
-          iconAnchor: [16, 32],  // Point of the icon which will correspond to marker's location
-          popupAnchor: [0, -32]  // Point from which the popup should open relative to the iconAnchor
+          iconAnchor: [16, 32], 
+          popupAnchor: [0, -32]  
         }),
       }).addTo(this.map);
     }
@@ -130,7 +130,7 @@ export class FriendsSeeLocationComponent implements OnInit, OnDestroy {
     await this.loadFriends();
     const friends = this.friends;
     friends.forEach((friend) => {
-      const friendUid = friend.uid || friend; // if friend is a UID string or has a UID field
+      const friendUid = friend.uid || friend; 
       const friendDocRef = doc(this.firestore, 'locations', friendUid);
       onSnapshot(friendDocRef, (docSnap) => {
         const data = docSnap.data();

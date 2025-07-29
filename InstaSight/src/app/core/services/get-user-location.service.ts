@@ -25,7 +25,6 @@ export class GetUserLocationService {
         source: 'gps'
       };
     } catch (gpsError) {
-      // If GPS fails, fallback to IP geolocation
       try {
         const ipLocation = await firstValueFrom(this.http.get<any>('https://ipapi.co/json/'));
         return {
@@ -34,7 +33,6 @@ export class GetUserLocationService {
           source: 'ip'
         };
       } catch (ipError) {
-        // If all fail, return unknown location 
         return {
           latitude: 0,
           longitude: 0,
@@ -51,7 +49,7 @@ export class GetUserLocationService {
       } else {
         navigator.geolocation.getCurrentPosition(resolve, reject, {
           enableHighAccuracy: true,
-          timeout: 10000,      // 10 seconds timeout
+          timeout: 10000,    
           maximumAge: 0
         });
       }

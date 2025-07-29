@@ -149,6 +149,6 @@ private speak(message: string): void {
   this.isSpeakingCooldown = true;
   setTimeout(() => {
     this.isSpeakingCooldown = false;
-  }, 2500); // 500 milliseconds
+  }, 2500); 
 }
 }

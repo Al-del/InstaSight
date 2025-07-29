@@ -36,7 +36,6 @@ export class RegisterComponent {
         this.password
       );
 
-      // Save additional user info to Firestore
       await setDoc(doc(this.firestore, 'users', userCredential.user.uid), {
         email: this.email,
         fullName: this.fullName,

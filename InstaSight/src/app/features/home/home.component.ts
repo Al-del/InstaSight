@@ -24,12 +24,12 @@ export class HomeComponent {
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras?.state as {
       email: string,
-      user: string  // Changed to match what you're passing
+      user: string  
     } | undefined;
     
     if (state) {
       this.email = state.email;
-      this.username = state.user;  // Changed from state.user
+      this.username = state.user; 
     }
     console.log(this.email);
   }
